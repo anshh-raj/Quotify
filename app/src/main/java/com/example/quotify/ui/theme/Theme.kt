@@ -56,3 +56,8 @@ fun QuotifyTheme(
         content = content
     )
 }
+
+enum class Pages{
+    LISTING,
+    DETAIL
+}
