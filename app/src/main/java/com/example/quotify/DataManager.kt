@@ -3,7 +3,6 @@ package com.example.quotify
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import com.example.quotify.models.QuoteItem
-import com.example.quotify.ui.theme.Pages
 import com.google.gson.Gson
 
 object DataManager {
@@ -36,4 +35,9 @@ object DataManager {
             currentPage.value = Pages.LISTING
         }
     }
+}
+
+enum class Pages{
+    LISTING,
+    DETAIL
 }
