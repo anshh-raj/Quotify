@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.quotify.models.QuoteItem
+import com.example.quotify.navigation.AppNavGraph
+import com.example.quotify.navigation.QuotesScreen
 import com.example.quotify.screens.QuoteDetail
 import com.example.quotify.screens.QuoteListScreen
 import kotlinx.coroutines.CoroutineScope
@@ -65,14 +67,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App(){
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
     ) {
 
-        Derived()
+//        Derived()
 //        Loader()
 
 //        ProducedState()
@@ -87,12 +89,18 @@ fun App(){
 
 //        Counter()
 //
-//
+
+        AppNavGraph()
+
+
 //        if(DataManager.isDataLoaded.value){
 //            if(DataManager.currentPage.value == Pages.LISTING){
-//                QuoteListScreen(DataManager.data) {quote: QuoteItem ->
+//                QuoteListScreen(DataManager.data, onNavigateToExplore = {
+//                    val category = "motivation"
+//                    navController.navigate("${QuotesScreen.Explore.route}/$category")
+//                })
+//                {quote: QuoteItem ->
 //                    DataManager.switchPages(quote)
-//
 //                }
 //            }
 //            else{
