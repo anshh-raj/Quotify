@@ -22,9 +22,10 @@ import androidx.compose.ui.unit.dp
 import com.example.quotify.components.ExploreQuoteCard
 import com.example.quotify.data.Quote
 import com.example.quotify.data.QuoteCategory
+import com.example.quotify.screens.viewModel.FavouriteViewModel
 
 @Composable
-fun ExploreScreen(initialCategoryName: String? = null){
+fun ExploreScreen(viewModel: FavouriteViewModel, initialCategoryName: String? = null){
 
     val categories: List<QuoteCategory?> = listOf(null) + QuoteCategory.entries.toTypedArray()
 
@@ -86,7 +87,7 @@ fun ExploreScreen(initialCategoryName: String? = null){
 
         items(filteredQuotes){quote->
 
-            ExploreQuoteCard(quote)
+            ExploreQuoteCard(viewModel,quote)
 
         }
 

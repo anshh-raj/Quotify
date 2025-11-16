@@ -40,9 +40,11 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.quotify.components.BottomNavigationBar
 import com.example.quotify.navigation.AppNavGraph
+import com.example.quotify.screens.viewModel.FavouriteViewModel
 import com.example.quotify.ui.theme.QuotifyTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,7 +84,6 @@ fun MyApp(){
 //                .windowInsetsPadding(WindowInsets.statusBars)
         ) {
             AppNavGraph(navController)
-//        ExploreScreen()
 
         }
 

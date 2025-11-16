@@ -21,9 +21,11 @@ import com.example.quotify.components.QuotesCard
 import com.example.quotify.components.SectionHeader
 import com.example.quotify.data.Quote
 import com.example.quotify.data.QuoteCategory
+import com.example.quotify.screens.viewModel.FavouriteViewModel
 
 @Composable
 fun QuoteListScreen(
+    viewModel: FavouriteViewModel,
     data: List<Quote>,
     onNavigateToExplore: (category: String?) -> Unit
 ) {
@@ -67,7 +69,7 @@ fun QuoteListScreen(
             item {
                 LazyRow{
                     items(data){
-                        QuotesCard(it)
+                        QuotesCard(viewModel,it)
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -99,7 +101,7 @@ fun QuoteListScreen(
             item{
                 LazyRow{
                     items(data){
-                        QuotesCard(it)
+                        QuotesCard(viewModel,it)
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))

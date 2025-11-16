@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Person
@@ -22,15 +23,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.quotify.data.Quote
+import com.example.quotify.screens.viewModel.FavouriteViewModel
 
 @Composable
-fun ExploreQuoteCard(quoteItem: Quote) {
+fun ExploreQuoteCard(viewModel: FavouriteViewModel,quoteItem: Quote) {
+
+    val itemList = viewModel.getItems()
+
+    val liked = remember {
+        mutableStateOf(itemList.contains(quoteItem))
+    }
 
     Box(
         modifier = Modifier
@@ -92,12 +102,20 @@ fun ExploreQuoteCard(quoteItem: Quote) {
                     Spacer(modifier = Modifier.padding(horizontal = 8.dp))
 
                     Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
+                        imageVector = if (itemList.contains(quoteItem)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "",
-                        tint = Color.Black,
+                        tint = if(itemList.contains(quoteItem)) Color.Red else Color.Black,
                         modifier = Modifier
                             .size(16.dp)
-                            .clickable{}
+                            .clickable{
+                                liked.value = !liked.value
+                                if(liked.value){
+                                    viewModel.addItem(quote = quoteItem)
+                                }
+                                else{
+                                    viewModel.removeItem(quote = quoteItem)
+                                }
+                            }
                     )
 
                 }
