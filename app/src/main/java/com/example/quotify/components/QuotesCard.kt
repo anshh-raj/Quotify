@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.HeartBroken
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,13 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.quotify.data.Quote
-import com.example.quotify.models.QuoteItem
 
 @Composable
 fun QuotesCard(quoteItem: Quote){
@@ -50,18 +46,11 @@ fun QuotesCard(quoteItem: Quote){
                 .fillMaxSize()
                 .background(
                     brush = Brush.linearGradient(
-                        colors = if (quoteItem.id % 2 == 1 ){
-                            listOf(
-                                Color(0xFF140AFF),
-                                Color(0xFF140AFF).copy(alpha = 0.2f)
-                            )
-                        }
-                        else{
-                            listOf(
-                                Color(0xFF2A2A2C),
-                                Color(0xFF141415).copy(alpha = 0.2f)
-                            )
-                        }
+                        colors = listOf(
+                            quoteItem.category.bgColor,
+                            quoteItem.category.bgColor.copy(alpha = 0.8f),
+                            quoteItem.category.bgColor.copy(alpha = 0.6f)
+                        )
                     )
                 )
                 .padding(15.dp),

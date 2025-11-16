@@ -12,18 +12,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,13 +40,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.quotify.models.QuoteItem
+import androidx.navigation.compose.rememberNavController
+import com.example.quotify.components.BottomNavigationBar
 import com.example.quotify.navigation.AppNavGraph
-import com.example.quotify.navigation.QuotesScreen
-import com.example.quotify.screens.QuoteDetail
-import com.example.quotify.screens.QuoteListScreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.quotify.ui.theme.QuotifyTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -52,26 +51,58 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        //this will load the data on the background thread and not disturb the main thread
-        CoroutineScope(Dispatchers.IO).launch {
-//            delay(5000)
-            DataManager.loadAssetsFromFile(applicationContext)
-        }
         setContent {
-            App()
+            QuotifyTheme {
+                MyApp()
+            }
         }
     }
 }
 
 @Composable
-fun App(){
+fun MyApp(){
+    val navController = rememberNavController()
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                actions = {
+                    BottomNavigationBar {route ->
+                        navController.navigate(route)
+                    }
+
+                },
+
+            )
+        }
+    ) {innerPadding->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+//                .windowInsetsPadding(WindowInsets.statusBars)
+        ) {
+            AppNavGraph(navController)
+//        ExploreScreen()
+
+        }
+
+    }
+
+}
+
+
+
+
+
+
+@Composable
+fun SideEffectsMain() {
     Column(
 //        verticalArrangement = Arrangement.Center,
 //        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
 
 //        Derived()
@@ -89,39 +120,18 @@ fun App(){
 
 //        Counter()
 //
-
-        AppNavGraph()
-
-
-//        if(DataManager.isDataLoaded.value){
-//            if(DataManager.currentPage.value == Pages.LISTING){
-//                QuoteListScreen(DataManager.data, onNavigateToExplore = {
-//                    val category = "motivation"
-//                    navController.navigate("${QuotesScreen.Explore.route}/$category")
-//                })
-//                {quote: QuoteItem ->
-//                    DataManager.switchPages(quote)
-//                }
-//            }
-//            else{
-//                DataManager.currentQuote?.let { QuoteDetail(it) }
-//            }
-//        }
-//        else{
-//            CircularProgressIndicator()
-//        }
     }
 }
 
 @Composable
-fun Counter(){
+fun Counter() {
     val count = remember { mutableIntStateOf(0) }
     val key = count.intValue % 3 == 0
     LaunchedEffect(key1 = key) {
         Log.d("counter", "Counter: ${count.intValue}")
     }
     Button(
-        onClick = {count.intValue++}
+        onClick = { count.intValue++ }
     ) {
         Text("Increment count")
     }
@@ -131,7 +141,7 @@ fun Counter(){
 }
 
 @Composable
-fun LaunchEffectComposable(){
+fun LaunchEffectComposable() {
 
     val counter = remember { mutableIntStateOf(0) }
 //    val key = counter.intValue % 3 == 0
@@ -140,19 +150,18 @@ fun LaunchEffectComposable(){
         Log.d("LaunchEffectComposable", "LaunchEffectComposable: Started...")
 
         try {
-            for (i in 1..10){
+            for (i in 1..10) {
                 counter.intValue++
 //                Log.d("LaunchEffectComposable", "LaunchEffectComposable: ${counter.intValue}")
                 delay(1000)
             }
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             Log.d("LaunchEffectComposable", "LaunchEffectComposableError: ${e.message.toString()}")
         }
     }
 
     var text = "Counter is running ${counter.intValue}"
-    if(counter.intValue == 10){
+    if (counter.intValue == 10) {
         text = "counter stopped"
     }
 
@@ -198,13 +207,13 @@ fun LaunchEffectComposable(){
 }
 
 @Composable
-fun CoroutineScopeComposable(){
+fun CoroutineScopeComposable() {
 
     val counter = remember { mutableIntStateOf(0) }
     var scope = rememberCoroutineScope()
 
     var text = "Counter is running ${counter.intValue}"
-    if(counter.intValue == 10){
+    if (counter.intValue == 10) {
         text = "Counter Stopped"
     }
 
@@ -215,12 +224,15 @@ fun CoroutineScopeComposable(){
                 scope.launch {
                     Log.d("CoroutineComposable", "CoroutineScopeComposable: Started...")
                     try {
-                        for (i in 1..10){
+                        for (i in 1..10) {
                             counter.intValue++
                             delay(1000)
                         }
-                    } catch (e:Exception){
-                        Log.d("CoroutineComposable", "CoroutineScopeComposable: ${e.message.toString()}")
+                    } catch (e: Exception) {
+                        Log.d(
+                            "CoroutineComposable",
+                            "CoroutineScopeComposable: ${e.message.toString()}"
+                        )
                     }
                 }
             }
@@ -240,7 +252,7 @@ fun CoroutineScopeComposable(){
 }
 
 @Composable
-fun RememberUpdatedState(){
+fun RememberUpdatedState() {
     var counter = remember { mutableIntStateOf(0) }
     LaunchedEffect(key1 = Unit) {
         delay(2000)
@@ -251,7 +263,7 @@ fun RememberUpdatedState(){
 }
 
 @Composable
-fun DisplayCount(value : Int){
+fun DisplayCount(value: Int) {
 //    LaunchedEffect(key1 = Unit) {
 //        delay(5000) // long running task
 //        Log.d("display_Count", "DisplayCount: $value")//consider we need to use the value here
@@ -270,8 +282,11 @@ fun DisplayCount(value : Int){
     val state = rememberUpdatedState(value)
     LaunchedEffect(key1 = Unit) {
         delay(5000) // long running task
-        Log.d("display_Count", "DisplayCount: ${state.value}")//consider we need to use the value here
-    // state will hold the latest value
+        Log.d(
+            "display_Count",
+            "DisplayCount: ${state.value}"
+        )//consider we need to use the value here
+        // state will hold the latest value
     }
 
     Text(value.toString())
@@ -279,7 +294,7 @@ fun DisplayCount(value : Int){
 }
 
 @Composable
-fun DisposableEffect(){
+fun DisposableEffect() {
     var state = remember { mutableStateOf(false) }
 
     DisposableEffect(key1 = state.value) {
@@ -303,14 +318,16 @@ fun DisposableEffect(){
 
 //eg for disposable effect
 @Composable
-fun DisposableEffect2(){
+fun DisposableEffect2() {
     val view = LocalView.current // give access to all the visible views on the current screen
     DisposableEffect(key1 = Unit) {
         val listener = ViewTreeObserver.OnGlobalLayoutListener {
             // whenever there is a change in layout this code is executed
 
-            val insets = ViewCompat.getRootWindowInsets(view) // this will find all the rectangles on the current screen
-            val isKeyboardVisible = insets?.isVisible(WindowInsetsCompat.Type.ime()) //checks if keyboard is visible or not
+            val insets =
+                ViewCompat.getRootWindowInsets(view) // this will find all the rectangles on the current screen
+            val isKeyboardVisible =
+                insets?.isVisible(WindowInsetsCompat.Type.ime()) //checks if keyboard is visible or not
             Log.d("Keyboard_check", "DisposableEffect2: ${isKeyboardVisible.toString()}")
 
         }
@@ -331,9 +348,9 @@ fun DisposableEffect2(){
 // it is helpful at places where we have live data or flow ..and we have to create and maintain state for this
 
 @Composable
-fun ProducedState(){
+fun ProducedState() {
     val state = produceState(initialValue = 0) {
-        for(i in 1..10){
+        for (i in 1..10) {
             delay(1000)
             value += 1
         }
@@ -344,9 +361,9 @@ fun ProducedState(){
 
 //implementation of loader using produced state
 @Composable
-fun Loader(){
+fun Loader() {
     val degree = produceState(initialValue = 0) {
-        while (true){
+        while (true) {
             delay(1000)
             value = (value + 10) % 360
         }
@@ -355,7 +372,7 @@ fun Loader(){
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
-    ){
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -375,13 +392,13 @@ fun Loader(){
 //derivedStateOf
 //it is used to derive a new state from existing multiple states
 @Composable
-fun Derived(){
+fun Derived() {
     val tableOf = remember { mutableIntStateOf(5) }
     val index = produceState(1) {
-         repeat(10){
-             delay(1000)
-             value += 1
-         }
+        repeat(10) {
+            delay(1000)
+            value += 1
+        }
     }
 
     val message = remember {
@@ -393,7 +410,7 @@ fun Derived(){
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(1f)
-    ){
+    ) {
         Text(
             message.value,
             style = MaterialTheme.typography.bodyLarge
