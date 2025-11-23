@@ -23,8 +23,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,10 +35,6 @@ import com.example.quotify.screens.viewModel.FavouriteViewModel
 fun QuotesCard(viewModel: FavouriteViewModel, quoteItem: Quote){
 
     val itemList = viewModel.getItems()
-
-    val liked = remember {
-        mutableStateOf(itemList.contains(quoteItem))
-    }
 
     Card(
         modifier = Modifier
@@ -92,12 +86,11 @@ fun QuotesCard(viewModel: FavouriteViewModel, quoteItem: Quote){
 
                     IconButton(
                         onClick = {
-                            liked.value = !liked.value
-                            if(liked.value){
-                                viewModel.addItem(quote = quoteItem)
+                            if(itemList.contains(quoteItem)){
+                                viewModel.removeItem(quote = quoteItem)
                             }
                             else{
-                                viewModel.removeItem(quote = quoteItem)
+                                viewModel.addItem(quote = quoteItem)
                             }
                         }
                     ) {
